@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>KKBox Churn Analysis Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #ffffff; 
+            margin: 0; 
+            padding: 20px; 
+            color: #333;
+        }
+        .container { max-width: 1200px; margin: auto; }
+        .header { text-align: center; padding: 20px 0; border-bottom: 1px solid #eee; margin-bottom: 30px; }
+        .chart-section { margin-bottom: 50px; }
+        .chart-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; color: #2c3e50; border-left: 5px solid #409EFF; padding-left: 10px; }
+        .chart-container { width: 100%; height: 500px; background: #fff; border: 1px solid #f0f0f0; border-radius: 4px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .description { font-size: 0.9rem; color: #666; margin-bottom: 10px; line-height: 1.5; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>User Churn Prediction & Strategy Dashboard</h1>
+        <p>Research Context: KKBox Subscriber Churn Modeling</p>
+    </div>
+
+    <div class="chart-section">
+        <div class="chart-title">1. User Journey Sequence Mapping (Multi-source Fusion)</div>
+        <p class="description">Visualizing the flow of user behavior sequences from various data sources (Transaction logs, behavior logs, and service records) towards retention or churn.</p>
+        <div id="sankey-chart" class="chart-container"></div>
+    </div>
+
+    <div class="grid">
+        <div class="chart-section">
+            <div class="chart-title">2. Behavioral Diagnosis: Avg. Usage Duration</div>
+            <p class="description">Comparing the average daily listening duration between churned and retained groups to identify activity thresholds.</p>
+            <div id="bar-chart" class="chart-container"></div>
+        </div>
+
+        <div class="chart-section">
+            <div class="chart-title">3. Model Transformation Pipeline</div>
+            <p class="description">The complete analytical chain from raw data processing to deep learning prediction and final intervention strategies.</p>
+            <div id="funnel-chart" class="chart-container"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- 1. Sankey Chart Configuration ---
+    var sankeyChart = echarts.init(document.getElementById('sankey-chart'));
+    sankeyChart.setOption({
+        tooltip: { trigger: 'item', triggerOn: 'mousemove' },
+        series: [{
+            type: 'sankey',
+            layout: 'none',
+            emphasis: { focus: 'adjacency' },
+            data: [
+                {name: 'Transaction Logs'}, {name: 'Behavior Logs'}, {name: 'Service Tickets'},
+                {name: 'User Journey Sequence'}, {name: 'High Engagement'}, {name: 'Low Activity'},
+                {name: 'Intervention Trigger'}, {name: 'Churn'}, {name: 'Retention'}
+            ],
+            links: [
+                {source: 'Transaction Logs', target: 'User Journey Sequence', value: 500},
+                {source: 'Behavior Logs', target: 'User Journey Sequence', value: 800},
+                {source: 'Service Tickets', target: 'User Journey Sequence', value: 200},
+                {source: 'User Journey Sequence', target: 'High Engagement', value: 900},
+                {source: 'User Journey Sequence', target: 'Low Activity', value: 600},
+                {source: 'Low Activity', target: 'Intervention Trigger', value: 300},
+                {source: 'Low Activity', target: 'Churn', value: 300},
+                {source: 'High Engagement', target: 'Retention', value: 850},
+                {source: 'High Engagement', target: 'Low Activity', value: 50},
+                {source: 'Intervention Trigger', target: 'Retention', value: 200},
+                {source: 'Intervention Trigger', target: 'Churn', value: 100}
+            ],
+            lineStyle: { color: 'gradient', curveness: 0.5 }
+        }]
+    });
+
+    // --- 2. Bar Chart Configuration ---
+    var barChart = echarts.init(document.getElementById('bar-chart'));
+    barChart.setOption({
+        tooltip: { trigger: 'axis' },
+        xAxis: { type: 'category', data: ['Churned Users', 'Retained Users'] },
+        yAxis: { type: 'value', name: 'Avg. Minutes/Day' },
+        series: [{
+            data: [
+                { value: 45, itemStyle: {color: '#f56c6c'} }, 
+                { value: 132, itemStyle: {color: '#67c23a'} }
+            ],
+            type: 'bar',
+            barWidth: '50%',
+            label: { show: true, position: 'top' }
+        }]
+    });
+
+    // --- 3. Funnel Chart Configuration ---
+    var funnelChart = echarts.init(document.getElementById('funnel-chart'));
+    funnelChart.setOption({
+        tooltip: { trigger: 'item', formatter: "{a} <br/>{b} : {c}%" },
+        series: [{
+            name: 'Pipeline',
+            type: 'funnel',
+            left: '10%', width: '80%',
+            sort: 'descending',
+            data: [
+                {value: 100, name: 'Data Fusion'},
+                {value: 80, name: 'Deep Learning Prediction'},
+                {value: 60, name: 'Risk Identification'},
+                {value: 40, name: 'Strategy Simulation'},
+                {value: 20, name: 'Effective Retention'}
+            ]
+        }]
+    });
+
+    // Responsive charts
+    window.addEventListener('resize', function() {
+        sankeyChart.resize();
+        barChart.resize();
+        funnelChart.resize();
+    });
+</script>
+</body>
+</html>
